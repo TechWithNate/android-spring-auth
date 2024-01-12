@@ -9,6 +9,6 @@ import retrofit2.http.POST;
 public interface JsonPlaceHolderApi {
 
     @POST("users")
-    Call<User> createPost(@Body User user);
+    Call<User> createUser(@Body User user);
 
 }
