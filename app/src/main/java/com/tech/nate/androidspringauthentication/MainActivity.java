@@ -11,6 +11,8 @@ import com.tech.nate.androidspringauthentication.model.User;
 import java.util.Objects;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
         initFields();
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://reqres.in/api/")
+                .baseUrl("")
                 // as we are sending data in json format so
                 // we have to add Gson converter factory
                 .addConverterFactory(GsonConverterFactory.create())
@@ -79,7 +81,23 @@ public class MainActivity extends AppCompatActivity {
     private void createAccount(String firstname, String lastname, String email, String password){
         User user = new User(firstname, lastname, email, password);
 
-        Call<User> call =
+        Call<User> call = jsonPlaceHolderApi.createUser(user);
+
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(MainActivity.this, "Code: "+response.code(), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Toast.makeText(MainActivity.this, "Hurray! Account Created Successfully", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "Hmmm: "+t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }
